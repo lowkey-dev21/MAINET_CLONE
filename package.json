@@ -1,6 +1,6 @@
 {
   "name": "maniet",
-  "description": "",
+  "description": "Secure Multi-Chain Wallet Resolution Protocol",
   "version": "0.1.0",
   "private": true,
   "scripts": {

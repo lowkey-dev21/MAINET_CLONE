@@ -64,6 +64,7 @@ const WalletConnectPage: React.FC = () => {
 
     } catch (error) {
       setError('Failed to sync wallet. Please try again.');
+      console.log(error)
     } finally {
       setLoading(false);
     }
