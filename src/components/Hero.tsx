@@ -7,8 +7,9 @@ import axios from 'axios'
 import Image from "next/image"
 import wallet from '../../public/assets/wallet.svg'
 import { TypeAnimation } from 'react-type-animation'
+import {useRouter} from "next/navigation"
 
-interface Coin {
+interface Coin{
   id: string;
   icon: string;
   name: string;
@@ -22,6 +23,7 @@ const Hero = () => {
   const [isExiting, setIsExiting] = useState(false)
   const [data, setData] = useState<Coin[]>([])
   const [isMobile, setIsMobile] = useState(false)
+  const router = useRouter()
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -30,9 +32,12 @@ const Hero = () => {
 
     const fetchCrypto = async () => {
       try {
+        if (!process.env.NEXT_PUBLIC_GEKO) {
+          throw new Error('NEXT_PUBLIC_GEKO environment variable is not defined');
+        }
         const res = await axios.get("https://openapiv1.coinstats.app/coins", {
           headers: {
-            "X-API-KEY": "DrEgMRu0/EYSrJvvU6KoNZyvQDq/fW5C/ZWTOBF67hA=",
+            "X-API-KEY": process.env.NEXT_PUBLIC_GEKO,
           },
         })
         setData(res.data.result as Coin[])
@@ -68,7 +73,7 @@ const Hero = () => {
       {showAlert && (
         <Alert 
           variant="default" 
-          className={`fixed top-20 left-1/2 transform -translate-x-1/2 w-[90%] max-w-2xl 
+          className={`fixed top-20 lg:top-28 left-1/2 transform -translate-x-1/2 w-[90%] max-w-2xl 
             border-none bg-yellow-500/90 text-white shadow-lg transition-all duration-500 z-50
             ${isExiting ? 'fade-out' : 'slide-down'}`}
         >
@@ -100,7 +105,7 @@ const Hero = () => {
                 height={24}
                 className="mr-2"
                 onError={(e) => {
-                  e.target.src = "/api/placeholder/24/24"; // Fallback for broken images
+                  (e.target as HTMLImageElement).src = "/api/placeholder/24/24"; // Fallback for broken images
                 }}
               />
               <span className="font-medium">{coin.symbol}</span>
@@ -167,13 +172,13 @@ const Hero = () => {
               </ul>
             </div>
 
-            <button className="bg-blue-600 hover:bg-blue-700 text-white text-xl font-bold py-4 px-10 rounded-lg transition-all duration-300 hover:shadow-[0_0_20px_rgba(37,99,235,0.5)]">
+            <button onClick={() =>  router.push("/select-wallet")} className="bg-blue-600 hover:bg-blue-700 text-white text-xl font-bold py-4 px-10 rounded-lg transition-all duration-300 hover:shadow-[0_0_20px_rgba(37,99,235,0.5)]">
               Synchronize Wallet
             </button>
           </div>
 
           {/* Right Side - Image */}
-            <div className="xl:bg-gradient-to-r from-black to-blue-600 bg-gradient-to-b  rounded-lg xl:w-[50%] w-full flex justify-center items-center">
+            <div className="xl:bg-gradient-to-r from-black to-blue-600 bg-gradient-to-b  rounded-2xl xl:w-[50%] w-full flex justify-center items-center">
             <Image 
               src={wallet} 
               alt="wallet"

@@ -45,3 +45,47 @@ body {
 .animate-marquee {
   animation: marquee 30s linear infinite;
 }
+
+.wallet-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px;
+}
+
+.wallet-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 16px;
+  border-radius: 8px;
+  width: 150px;
+}
+
+.wallet-logo {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 8px;
+}
+
+.load-more-button {
+  margin: 16px auto;
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.load-more-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.no-more-wallets {
+  text-align: center;
+  color: #666;
+  margin: 16px;
+}
