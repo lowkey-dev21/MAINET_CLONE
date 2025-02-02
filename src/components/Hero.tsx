@@ -127,13 +127,13 @@ const Hero = () => {
           <div className="flex-1 text-white">
             {isMobile ? (
               <h1 className="text-3xl font-bold mb-8 bg-gradient-to-r from-blue-500 to-blue-200 bg-clip-text text-transparent">
-                ProjectDappsMainNet
+                ProjectMainNet
               </h1>
             ) : (
               <div className="mb-8 h-24 flex items-center"> {/* Fixed height to prevent layout shift */}
                 <TypeAnimation
                   sequence={[
-                    'ProjectDappsMainNet', // Initial text
+                    'ProjectMainNet', // Initial text
                     2000, // Increased delay for better mobile performance
                     'Secure. Fast.', // Shortened text for mobile
                     2000,

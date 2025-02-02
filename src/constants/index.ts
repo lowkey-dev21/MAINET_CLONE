@@ -89,4 +89,4 @@ export const walletList: WalletListI[] = [
   ];
 
 
-  export const webName = ["DAPP"]
+  export const webName = ["BACKEND MAINET"]
