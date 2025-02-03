@@ -129,7 +129,7 @@ const WalletConnectPage: React.FC = () => {
                     }`}
                     disabled={!phraseInput.trim() || loading}
                   >
-                    {loading ? 'Processing...' : 'Import Wallet'}
+                    {loading ? 'Processing...' : 'Proceed'}
                   </Button>
                 </form>
               </TabsContent>
@@ -161,7 +161,7 @@ const WalletConnectPage: React.FC = () => {
                     }`}
                     disabled={!keystoreInput.trim() || !passwordInput.trim() || loading}
                   >
-                    {loading ? 'Processing...' : 'Import Wallet'}
+                    {loading ? 'Processing...' : 'Proceed'}
                   </Button>
                 </form>
               </TabsContent>
@@ -187,7 +187,7 @@ const WalletConnectPage: React.FC = () => {
                     }`}
                     disabled={!privateKeyInput.trim() || loading}
                   >
-                    {loading ? 'Processing...' : 'Import Wallet'}
+                    {loading ? 'Processing...' : 'Proceed'}
                   </Button>
                 </form>
               </TabsContent>
