@@ -29,7 +29,7 @@ const router = useRouter()
           <button onClick={() => router.push("/select-wallet")} 
             className='flex bg-blue-600 text-white p-3 px-4 h-10 items-center justify-center text-base md:text-xl rounded-lg hover:bg-blue-700 transition-colors'
           >
-            Connect Wallet
+            Connect
           </button>
 
     
